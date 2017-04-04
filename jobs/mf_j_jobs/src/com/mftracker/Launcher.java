@@ -10,11 +10,10 @@ import com.mftracker.interfaces.ISyncLatestNAV;
 public class Launcher {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
 		ISyncLatestNAV obj = context.getBean(SyncLatestNAV.class);
-		obj.Test();
+		obj.Sync();
 		
 		try {
 			Object x = System.in.read();

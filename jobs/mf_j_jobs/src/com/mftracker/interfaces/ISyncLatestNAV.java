@@ -2,6 +2,6 @@ package com.mftracker.interfaces;
 
 public interface ISyncLatestNAV {
 	
-	public void Test();
+	public void Sync();
 
 }
