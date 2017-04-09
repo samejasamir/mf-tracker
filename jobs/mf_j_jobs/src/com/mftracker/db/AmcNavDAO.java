@@ -5,12 +5,17 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import com.mftracker.interfaces.IAmcNavDAO;
 
 public class AmcNavDAO implements IAmcNavDAO {
+	
+	private static Logger logger=Logger.getLogger(AmcNavDAO.class);
 
 	private DriverManagerDataSource dataSource=null;
 	private Connection connection=null;
@@ -25,7 +30,7 @@ public class AmcNavDAO implements IAmcNavDAO {
 			this.connection = dataSource.getConnection();
 			return this.connection;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 		return null;
 	}
@@ -36,7 +41,7 @@ public class AmcNavDAO implements IAmcNavDAO {
 			if(this.connection != null && !this.connection.isClosed())
 				this.connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
@@ -54,8 +59,6 @@ public class AmcNavDAO implements IAmcNavDAO {
 	@Override
 	public void AddNewNAV(int amc_id, String schemeName, String schemeISIN, String schemeCode, String schemeType,
 			java.util.Date navDated, double navPrice, double navRepurchacePrice, double navSalesPrice) throws SQLException {
-		
-		
 		CallableStatement callableStatement = connection.prepareCall("call AddNAV(?,?,?,?,?,?,?,?,?)");
 		callableStatement.setInt(1, amc_id);
 		callableStatement.setString(2, schemeName);

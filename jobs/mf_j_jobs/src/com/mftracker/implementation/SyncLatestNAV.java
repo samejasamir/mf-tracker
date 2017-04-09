@@ -1,5 +1,6 @@
 package com.mftracker.implementation;
 
+import com.mftracker.Launcher;
 import com.mftracker.interfaces.IAmcNavDAO;
 import com.mftracker.interfaces.ISyncLatestNAV;
 
@@ -18,8 +19,12 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
+import org.apache.log4j.Logger;
 
-public class SyncLatestNAV implements ISyncLatestNAV {	
+
+public class SyncLatestNAV implements ISyncLatestNAV {
+	
+	private static Logger logger=Logger.getLogger(SyncLatestNAV.class);
 	
 	private IAmcNavDAO dao=null;
 	
@@ -44,12 +49,12 @@ public class SyncLatestNAV implements ISyncLatestNAV {
 		}
 		catch (Exception ex)
 		{
-			System.out.println(ex.getMessage());
+			logger.fatal(ex);
 		}		
 		finally
 		{
 			long diff = ((new java.util.Date()).getTime() - startTime.getTime());
-			System.out.println("COMPLETED SYNC IN " + diff + " MILLISECONDS" );
+			logger.info("COMPLETED SYNC IN " + diff + " MILLISECONDS");
 		}
 	}
 	
@@ -78,7 +83,7 @@ public class SyncLatestNAV implements ISyncLatestNAV {
 			return  Files.readAllLines(Paths.get("latestnav"));						
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.fatal(e);
 			return null;
 		}		
 	}
@@ -105,15 +110,15 @@ public class SyncLatestNAV implements ISyncLatestNAV {
 						if(columns[0].contains("Schemes") && schemeType != columns[0])
 						{
 							schemeType = columns[0];
-							System.out.println(schemeType);
+							logger.info(schemeType);
 						}
 						//INITIALIZING SCHEME NAME 
 						else if(amcName != columns[0])
 						{
 							amcName = columns[0];
 							amcId = dao.AddNewAMC(amcName);
-							System.out.println(amcId);
-							System.out.println(amcName);
+							logger.info(amcId);
+							logger.info(amcName);
 						}
 					}				
 					
@@ -125,11 +130,11 @@ public class SyncLatestNAV implements ISyncLatestNAV {
 						dao.AddNewNAV(amcId, columns[3], columns[1], columns[0], schemeType,new java.util.Date(),
 								Double.parseDouble(columns[4]), Double.parseDouble(columns[5]), Double.parseDouble(columns[6]));
 						
-						System.out.println(columns[3]);
+						logger.info(columns[3]);
 					}
 					catch(Exception ex)
 					{
-						System.out.println("COULDNT ADD NAV FOR " + amcName + " " + columns + " " + ex.getMessage());
+						logger.error("COULDNT ADD NAV FOR " + amcName + " " + columns + " " + ex.getMessage());
 					}
 				}
 				
